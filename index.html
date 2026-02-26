@@ -422,6 +422,99 @@
   position: relative;
   z-index: 1;
 }
+
+    /* ==========================
+   Mobile Responsive Upgrade
+   Paste at END of your CSS
+   ========================== */
+
+/* Make sure nothing causes horizontal scroll */
+html, body { max-width: 100%; overflow-x: hidden; }
+
+/* Make the stage/card adapt better */
+.stage{
+  width: min(520px, 100%); /* desktop/tablet nice */
+}
+
+/* The card should never feel tight on phones */
+.paper{
+  width: 100%;
+}
+
+/* Content spacing for a vertical phone */
+@media (max-width: 520px){
+
+  .wrap{
+    padding: calc(10px + var(--safe-top)) 10px calc(10px + var(--safe-bottom));
+  }
+
+  .stage{
+    width: 100%;
+    gap: 12px;
+  }
+
+  /* Bigger, more realistic paper on vertical phone */
+  .paperInner{
+    padding: 26px 14px 22px;
+  }
+
+  /* Title/subtitle scale better */
+  .title{
+    font-size: 34px;
+  }
+  .subtitle{
+    font-size: 14px;
+    line-height: 1.95;
+  }
+
+  /* Hero row stacks vertically on mobile */
+  .heroRow{
+    grid-template-columns: 1fr;
+    gap: 10px;
+    justify-items: center;
+    text-align: center;
+  }
+
+  /* Names horizontal line stays centered */
+  .namesSide{
+    justify-content: center;
+  }
+
+  /* Bigger names on phone but not breaking */
+  .nBig{
+    font-size: 32px;
+  }
+  .nAnd{
+    font-size: 18px;
+  }
+
+  /* Couple image bigger for vertical phone */
+  .coupleWrap img{
+    width: 72%;
+    max-width: 260px;
+  }
+
+  /* Info rows readable on small screens */
+  .infoRow{
+    padding: 11px 10px;
+  }
+  .infoValue{
+    font-size: 13px;
+  }
+
+  /* Countdown 2 columns on phone */
+  .countdown{
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 360px){
+  .title{ font-size: 30px; }
+  .nBig{ font-size: 28px; }
+  .coupleWrap img{ width: 78%; }
+}
   </style>
 </head>
 
@@ -636,4 +729,5 @@
     setInterval(updateCountdown, 1000);
   </script>
 </body>
+
 </html>
