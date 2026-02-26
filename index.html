@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="ku" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f8f5ef" />
+  <title>بانگهێشتنامەی ئاهەنگی داواکاری</title>
+
+  <!-- Classic fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f8f5ef;
+      --paper:#ffffff;
+      --ink:#2f2a24;
+      --muted:#6e675f;
+
+      --gold:#b89b5e;
+      --gold2:#e2cfa3;
+
+      --shadow: 0 18px 55px rgba(18,14,10,.12);
+      --shadow2: 0 12px 28px rgba(18,14,10,.10);
+
+      --r-xl: 22px;
+      --r-lg: 16px;
+
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    *{ box-sizing:border-box; }
+    html, body { height:100%; }
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      overflow-x:hidden;
+    }
+
+    .bg{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        radial-gradient(1200px 700px at 18% 8%, rgba(226,207,163,.18), transparent 55%),
+        radial-gradient(900px 700px at 82% 12%, rgba(184,155,94,.10), transparent 55%),
+        radial-gradient(900px 700px at 50% 92%, rgba(184,155,94,.08), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,0));
+      filter:saturate(1.03);
+    }
+
+    .curtain{
+      position:fixed;
+      top:0; bottom:0;
+      width:min(90px, 12vw);
+      pointer-events:none;
+      opacity:.75;
+      background:
+        linear-gradient(180deg, rgba(226,207,163,.18), transparent 38%, rgba(226,207,163,.12)),
+        radial-gradient(160px 900px at 0% 50%, rgba(184,155,94,.14), transparent 70%);
+    }
+    .curtain.left{ left:0; transform: scaleX(-1); }
+    .curtain.right{ right:0; }
+
+    .dotsFrame{
+      position:fixed;
+      inset:10px;
+      border-radius: 18px;
+      border: 2px dotted rgba(120,140,170,.35);
+      pointer-events:none;
+      opacity:.65;
+    }
+
+    .wrap{
+      min-height: 100svh;
+      padding: calc(10px + var(--safe-top)) 14px calc(10px + var(--safe-bottom));
+      display:grid;
+      place-items:center;
+    }
+
+    .stage{
+  width:min(520px, 100%);
+}
+
+    /* ENVELOPE */
+    .envelope{ width:100%; perspective: 1200px; }
+
+    .envShell{
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.96), rgba(255,255,255,.84)),
+        radial-gradient(900px 420px at 10% 10%, rgba(226,207,163,.16), transparent 60%),
+        radial-gradient(900px 420px at 90% 0%, rgba(184,155,94,.12), transparent 55%);
+      border: 1px solid rgba(0,0,0,.05);
+      overflow:hidden;
+      position:relative;
+      transform: translateZ(0);
+      max-height: 520px;
+
+      /* ✅ faster disappear */
+      transition:
+        opacity 420ms ease,
+        transform 420ms ease,
+        filter 420ms ease,
+        max-height 600ms ease,
+        margin 420ms ease;
+    }
+
+    .envShell.vanish{
+      opacity:0;
+      filter: blur(7px);
+      transform: translateY(-18px) scale(.985);
+      max-height: 0px;
+      margin: 0;
+      pointer-events:none;
+    }
+
+    .envBody{ position:relative; padding: 18px 16px 18px; }
+
+    .flap{
+      position:absolute;
+      left:0; right:0;
+      top:0;
+      height: 62%;
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform 1100ms cubic-bezier(.18,.92,.18,1);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.24), rgba(255,255,255,0)),
+        linear-gradient(135deg, rgba(226,207,163,.18), rgba(184,155,94,.10));
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      filter: drop-shadow(0 18px 24px rgba(18,14,10,.10));
+      pointer-events:none;
+    }
+
+    .tapArea{
+      padding: 62px 20px 54px;
+      min-height: 300px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .heartSeal{
+      width: min(260px, 70vw);
+      height:auto;
+      display:block;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transform-origin: 50% 55%;
+      filter: drop-shadow(0 22px 32px rgba(18,14,10,.18));
+      transition: transform .18s ease, filter .18s ease;
+    }
+    .heartSeal:active{
+      transform: translateY(3px) scale(.975);
+      filter: drop-shadow(0 16px 26px rgba(18,14,10,.16));
+    }
+
+    .seal-opening{
+      animation: sealOpen 900ms cubic-bezier(.2,.9,.2,1) forwards;
+    }
+    @keyframes sealOpen{
+      0%   { transform: translateY(0) scale(1) rotate(0deg); opacity:1; }
+      25%  { transform: translateY(3px) scale(.96) rotate(-2deg); }
+      55%  { transform: translateY(-8px) scale(1.02) rotate(4deg); }
+      100% { transform: translateY(-34px) scale(.86) rotate(12deg); opacity:0; }
+    }
+
+    /* CARD */
+    .paper{
+      width:100%;
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow2);
+      background: var(--paper);
+      border: 1px solid rgba(184,155,94,.20);
+      overflow:hidden;
+      opacity:0;
+      transform: translateY(22px) scale(.99);
+      filter: blur(10px);
+      transition:
+        opacity 1000ms cubic-bezier(.2,.9,.2,1),
+        transform 1000ms cubic-bezier(.2,.9,.2,1),
+        filter 1000ms cubic-bezier(.2,.9,.2,1);
+      pointer-events:none;
+    }
+
+    .paper.open{
+      opacity:1;
+      transform:none;
+      filter: blur(0);
+      pointer-events:auto;
+    }
+
+    .paper::before{
+      content:"";
+      position:absolute;
+      inset:12px;
+      border-radius: calc(var(--r-xl) - 8px);
+      border: 1px solid rgba(226,207,163,.42);
+      pointer-events:none;
+    }
+
+    .paperInner{
+      position:relative;
+      padding: 22px 16px 16px;
+      text-align:center;
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(184,155,94,.20);
+      background: rgba(248,245,239,.55);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .tagDot{
+      width:8px; height:8px;
+      border-radius:999px;
+      background: linear-gradient(135deg, var(--gold2), var(--gold));
+    }
+
+    .title{
+      font-family:"Cormorant Garamond", serif;
+      margin: 10px 0 4px;
+      color: var(--gold);
+      font-size: 38px;
+      font-weight: 700;
+      line-height:1.1;
+      opacity:0;
+      transform: translateY(10px);
+    }
+
+    .subtitle{
+      margin: 8px auto 0;
+      max-width: 44ch;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 2.0;
+      min-height: 42px;
+      white-space: pre-wrap;
+      opacity:0;
+      transform: translateY(10px);
+    }
+
+    .divider{
+      width: 120px;
+      height: 1px;
+      margin: 12px auto 12px;
+      background: linear-gradient(90deg, transparent, rgba(184,155,94,.45), transparent);
+      opacity:0;
+      transform: translateY(10px);
+    }
+
+    /* ✅ NEW: image with names on right side */
+    .heroRow{
+      margin-top: 6px;
+      display:grid;
+      grid-template-columns: 1fr auto; /* names right, image left (RTL) */
+      gap: 12px;
+      align-items:center;
+      justify-items: center;
+      opacity:0;
+      transform: translateY(10px);
+    }
+
+   .namesSide{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:10px;
+  flex-wrap:wrap;
+  text-align:right;
+}
+.nBig{
+  font-size: 34px;     /* bigger */
+  font-weight: 700;
+  line-height:1.2;
+  color: var(--ink);
+}
+    .nAnd{
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 18px;
+      line-height:1;
+      text-align:center;
+      opacity:.95;
+    }
+
+    .coupleWrap{
+      width: 100%;
+      display:flex;
+      justify-content:center;
+    }
+    .coupleWrap img{
+      width: 44%;
+      max-width: 180px;
+      height:auto;
+      display:block;
+      filter: drop-shadow(0 12px 22px rgba(18,14,10,.10));
+    }
+
+    /* info rows BELOW */
+    .info{
+      margin: 12px auto 0;
+      width: 100%;
+      display:grid;
+      gap: 10px;
+      text-align:right;
+    }
+
+    .infoRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(184,155,94,.16);
+      background: rgba(255,255,255,.96);
+      opacity:0;
+      transform: translateY(10px);
+    }
+
+    .infoRight{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+    .infoLabel{ font-size: 11px; color: var(--muted); }
+    .infoValue{
+      font-size: 13px;
+      color: var(--ink);
+      line-height:1.6;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .infoIcon{
+      width: 30px; height:30px;
+      border-radius: 9px;
+      display:grid;
+      place-items:center;
+      border: 1px solid rgba(0,0,0,.06);
+      flex: 0 0 auto;
+      box-shadow: 0 8px 16px rgba(0,0,0,.06);
+      font-size: 14px;
+    }
+    .infoIcon.blue{ background: rgba(88, 154, 255, .18); }
+    .infoIcon.pink{ background: rgba(255, 128, 170, .18); }
+    .infoIcon.red{  background: rgba(255, 92, 92,  .14); }
+
+    .countdown{
+      margin: 10px auto 0;
+      width: 100%;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      opacity:0;
+      transform: translateY(10px);
+    }
+    .pill{
+      border-radius: 12px;
+      border:1px solid rgba(184,155,94,.16);
+      background: rgba(255,255,255,.96);
+      padding: 10px 8px;
+      text-align:center;
+    }
+    .pill strong{ display:block; font-size: 16px; }
+    .pill em{ font-style:normal; color: var(--muted); font-size: 11px; }
+
+    .showUp{
+      opacity:1 !important;
+      transform:none !important;
+      transition: opacity 900ms ease, transform 900ms ease;
+    }
+
+    @media (max-width: 520px){
+      .tapArea{ min-height: 280px; padding: 56px 16px 46px; }
+      .countdown{ grid-template-columns: repeat(2, 1fr); }
+
+      /* stack image + names on mobile nicely */
+      .heroRow{
+        grid-template-columns: 1fr;
+        gap: 10px;
+        justify-items:center;
+        text-align:center;
+      }
+      .namesSide{ text-align:center; }
+      .coupleWrap img{ width: 58%; max-width: 190px; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .envShell, .flap, .paper { transition:none !important; }
+    }
+/* ===== Transparent Couple Background INSIDE card ===== */
+.paperInner{
+  position: relative;   /* important */
+}
+
+.bgCouple{
+  position: absolute;
+  inset: 0;
+  background-image: url("couple.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;  /* inside bottom area */
+  background-size: 75%;
+  opacity: 0.07;     /* transparency level */
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Make all text above the background */
+.paperInner > *:not(.bgCouple){
+  position: relative;
+  z-index: 1;
+}
+  </style>
+</head>
+
+<body>
+  <div class="bg"></div>
+  <div class="curtain left"></div>
+  <div class="curtain right"></div>
+  <div class="dotsFrame" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <div class="stage">
+
+      <!-- Envelope -->
+      <section class="envelope" aria-label="Invitation Envelope">
+        <div class="envShell" id="envShell">
+          <div class="envBody">
+            <div class="flap" id="flap"></div>
+            <div class="tapArea">
+              <img class="heartSeal" id="heartSeal" src="heart.png" alt="Seal heart">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Invitation -->
+      <article class="paper" id="paper" aria-label="Engagement Invitation">
+        <div class="paperInner">
+          <div class="tag"><span class="tagDot"></span><span>بانگهێشتنامە</span></div>
+
+          <div class="title" id="title">ئاهەنگی داواکاری</div>
+          <p class="subtitle" id="subtitle"></p>
+
+          <div class="divider" id="divider"></div>
+
+          <!-- ✅ Image + names side -->
+          <div class="heroRow" id="heroRow">
+            <!-- Names on RIGHT side -->
+           <div class="namesSide">
+  <span class="nBig" id="bride"></span>
+  <span class="nAnd">و</span>
+  <span class="nBig" id="groom"></span>
+</div>
+
+            <!-- Image -->
+            <div class="coupleWrap">
+              <img src="couple.png" alt="وێنەی هاوسەرگیریی کوردی" loading="eager">
+            </div>
+          </div>
+
+          <!-- Info BELOW -->
+          <div class="info" aria-label="Event details">
+            <div class="infoRow" id="row1">
+              <div class="infoRight">
+                <div class="infoLabel">ڕۆژ</div>
+                <div class="infoValue" id="dateText">هەینی ١٥ی ئازاری ٢٠٢٦</div>
+              </div>
+              <div class="infoIcon blue">📅</div>
+            </div>
+
+            <div class="infoRow" id="row2">
+              <div class="infoRight">
+                <div class="infoLabel">کات</div>
+                <div class="infoValue" id="timeText">کاتژمێر ٦ی ئێوارە</div>
+              </div>
+              <div class="infoIcon pink">⏰</div>
+            </div>
+
+            <div class="infoRow" id="row3">
+              <div class="infoRight">
+                <div class="infoLabel">شوێن</div>
+                <div class="infoValue" id="venueText">هۆڵی ڕۆز - سلێمانی</div>
+              </div>
+              <div class="infoIcon red">📍</div>
+            </div>
+          </div>
+
+          <div class="countdown" id="countdown" aria-label="Countdown">
+            <div class="pill"><strong id="cd_d">—</strong><em>ڕۆژ</em></div>
+            <div class="pill"><strong id="cd_h">—</strong><em>کاتژمێر</em></div>
+            <div class="pill"><strong id="cd_m">—</strong><em>خولەک</em></div>
+            <div class="pill"><strong id="cd_s">—</strong><em>چرکە</em></div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+<div class="paperInner">
+  <div class="bgCouple"></div>
+
+  <script>
+    const INVITE = {
+      title: "ئاهەنگی داواکاری",
+      subtitle: "بە ناوی خۆشحاڵی و خۆشەویستی، بانگهێشتتان دەکەین بۆ بەشداربوون لە ئاهەنگی داواکاریەکەمان",
+      bride: "سارا",
+      groom: "ئەحمەد",
+      dateText: "هەینی ١٥ی ئازاری ٢٠٢٦",
+      timeText: "کاتژمێر ٦ی ئێوارە",
+      venueText: "هۆڵی ڕۆز - سلێمانی",
+      dateTimeLocal: "2026-03-15T18:00:00"
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const setText = (id, v) => { const el=$(id); if(el) el.textContent = v ?? ""; };
+
+    async function typeLine(el, text, speed=11){
+      el.textContent = "";
+      for(let i=0;i<text.length;i++){
+        el.textContent += text[i];
+        await new Promise(r => setTimeout(r, speed));
+      }
+    }
+
+    // Fill static content (typed ones will be done in open)
+    setText("title", INVITE.title);
+    setText("dateText", INVITE.dateText);
+    setText("timeText", INVITE.timeText);
+    setText("venueText", INVITE.venueText);
+    setText("subtitle", "");
+
+    const envShell = $("envShell");
+    const flap = $("flap");
+    const paper = $("paper");
+    const subtitle = $("subtitle");
+    const seal = $("heartSeal");
+
+    const titleEl = $("title");
+    const divider = $("divider");
+    const heroRow = $("heroRow");
+
+    const brideEl = $("bride");
+    const groomEl = $("groom");
+
+    const row1 = $("row1"), row2 = $("row2"), row3 = $("row3");
+    const countdown = $("countdown");
+
+    let opened = false;
+
+    async function openInvite(){
+      if(opened) return;
+      opened = true;
+
+      // flap open
+      flap.style.transform = "rotateX(165deg)";
+
+      // show paper
+      setTimeout(() => paper.classList.add("open"), 520);
+
+      // ✅ faster fade envelope away
+      setTimeout(() => envShell.classList.add("vanish"), 650);
+
+      // ✅ top -> down sequence
+      setTimeout(() => titleEl.classList.add("showUp"), 700);
+      setTimeout(async () => {
+        subtitle.classList.add("showUp");
+        await typeLine(subtitle, INVITE.subtitle, 11);
+      }, 820);
+
+      setTimeout(() => divider.classList.add("showUp"), 1020);
+
+      // ✅ show hero row + type names
+      setTimeout(async () => {
+        heroRow.classList.add("showUp");
+        await typeLine(brideEl, INVITE.bride, 16);
+        await new Promise(r => setTimeout(r, 120));
+        await typeLine(groomEl, INVITE.groom, 16);
+      }, 1120);
+
+      // then details rows
+      setTimeout(() => row1.classList.add("showUp"), 1600);
+      setTimeout(() => row2.classList.add("showUp"), 1760);
+      setTimeout(() => row3.classList.add("showUp"), 1920);
+
+      // then countdown last
+      setTimeout(() => countdown.classList.add("showUp"), 2100);
+    }
+
+    seal.addEventListener("click", () => {
+      if(opened) return;
+      seal.classList.add("seal-opening");
+      setTimeout(openInvite, 280);
+    });
+
+    // Countdown
+    const target = new Date(INVITE.dateTimeLocal).getTime();
+    function updateCountdown(){
+      if(!Number.isFinite(target)) return;
+
+      const now = Date.now();
+      const diff = target - now;
+
+      const set = (id,val)=>setText(id,String(val));
+
+      if(diff <= 0){
+        set("cd_d",0); set("cd_h",0); set("cd_m",0); set("cd_s",0);
+        return;
+      }
+
+      const totalSec = Math.floor(diff / 1000);
+      const days = Math.floor(totalSec / 86400);
+      const hours = Math.floor((totalSec % 86400) / 3600);
+      const mins = Math.floor((totalSec % 3600) / 60);
+      const secs = totalSec % 60;
+
+      set("cd_d",days);
+      set("cd_h",hours);
+      set("cd_m",mins);
+      set("cd_s",secs);
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
