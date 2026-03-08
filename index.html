@@ -4,9 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f8f5ef" />
-  <title>بانگهێشتنامەی ئاهەنگی داواکاری</title>
+  <title>بانگهێشتنامەی ئاهەنگی مارەکردن</title>
 
-  <!-- Classic fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
@@ -17,7 +16,6 @@
       --paper:#ffffff;
       --ink:#2f2a24;
       --muted:#6e675f;
-
       --gold:#b89b5e;
       --gold2:#e2cfa3;
 
@@ -32,7 +30,8 @@
     }
 
     *{ box-sizing:border-box; }
-    html, body { height:100%; }
+    html, body { height:100%; max-width:100%; overflow-x:hidden; }
+
     body{
       margin:0;
       background: var(--bg);
@@ -83,11 +82,16 @@
     }
 
     .stage{
-  width:min(520px, 100%);
-}
+      width:min(560px, 100%);
+      display:grid;
+      gap:14px;
+    }
 
     /* ENVELOPE */
-    .envelope{ width:100%; perspective: 1200px; }
+    .envelope{
+      width:100%;
+      perspective:1200px;
+    }
 
     .envShell{
       border-radius: var(--r-xl);
@@ -100,9 +104,7 @@
       overflow:hidden;
       position:relative;
       transform: translateZ(0);
-      max-height: 520px;
-
-      /* ✅ faster disappear */
+      max-height: 560px;
       transition:
         opacity 420ms ease,
         transform 420ms ease,
@@ -115,18 +117,20 @@
       opacity:0;
       filter: blur(7px);
       transform: translateY(-18px) scale(.985);
-      max-height: 0px;
+      max-height: 0;
       margin: 0;
       pointer-events:none;
     }
 
-    .envBody{ position:relative; padding: 18px 16px 18px; }
+    .envBody{
+      position:relative;
+      padding: 18px 16px 18px;
+    }
 
     .flap{
       position:absolute;
-      left:0; right:0;
-      top:0;
-      height: 62%;
+      left:0; right:0; top:0;
+      height:62%;
       transform-origin: top center;
       transform: rotateX(0deg);
       transition: transform 1100ms cubic-bezier(.18,.92,.18,1);
@@ -141,14 +145,14 @@
 
     .tapArea{
       padding: 62px 20px 54px;
-      min-height: 300px;
+      min-height: 320px;
       display:flex;
       justify-content:center;
       align-items:center;
     }
 
     .heartSeal{
-      width: min(260px, 70vw);
+      width:min(260px, 70vw);
       height:auto;
       display:block;
       cursor:pointer;
@@ -158,6 +162,7 @@
       filter: drop-shadow(0 22px 32px rgba(18,14,10,.18));
       transition: transform .18s ease, filter .18s ease;
     }
+
     .heartSeal:active{
       transform: translateY(3px) scale(.975);
       filter: drop-shadow(0 16px 26px rgba(18,14,10,.16));
@@ -166,6 +171,7 @@
     .seal-opening{
       animation: sealOpen 900ms cubic-bezier(.2,.9,.2,1) forwards;
     }
+
     @keyframes sealOpen{
       0%   { transform: translateY(0) scale(1) rotate(0deg); opacity:1; }
       25%  { transform: translateY(3px) scale(.96) rotate(-2deg); }
@@ -209,8 +215,27 @@
 
     .paperInner{
       position:relative;
-      padding: 22px 16px 16px;
+      padding: 28px 22px 22px;
       text-align:center;
+      min-height: 620px;
+    }
+
+    /* transparent couple background inside card */
+    .bgCouple{
+      position:absolute;
+      inset:0;
+      background-image: url("couple.png");
+      background-repeat:no-repeat;
+      background-position: center 78%;
+      background-size: 72%;
+      opacity:.06;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .paperInner > *:not(.bgCouple){
+      position:relative;
+      z-index:1;
     }
 
     .tag{
@@ -224,8 +249,10 @@
       color: var(--muted);
       font-size: 12px;
     }
+
     .tagDot{
-      width:8px; height:8px;
+      width:8px;
+      height:8px;
       border-radius:999px;
       background: linear-gradient(135deg, var(--gold2), var(--gold));
     }
@@ -234,7 +261,7 @@
       font-family:"Cormorant Garamond", serif;
       margin: 10px 0 4px;
       color: var(--gold);
-      font-size: 38px;
+      font-size: 42px;
       font-weight: 700;
       line-height:1.1;
       opacity:0;
@@ -245,9 +272,9 @@
       margin: 8px auto 0;
       max-width: 44ch;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 15px;
       line-height: 2.0;
-      min-height: 42px;
+      min-height: 48px;
       white-space: pre-wrap;
       opacity:0;
       transform: translateY(10px);
@@ -256,66 +283,110 @@
     .divider{
       width: 120px;
       height: 1px;
-      margin: 12px auto 12px;
+      margin: 12px auto 18px;
       background: linear-gradient(90deg, transparent, rgba(184,155,94,.45), transparent);
       opacity:0;
       transform: translateY(10px);
     }
 
-    /* ✅ NEW: image with names on right side */
+    /* hero row */
     .heroRow{
-      margin-top: 6px;
+      margin-top: 8px;
       display:grid;
-      grid-template-columns: 1fr auto; /* names right, image left (RTL) */
-      gap: 12px;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
       align-items:center;
-      justify-items: center;
+      justify-items:center;
       opacity:0;
       transform: translateY(10px);
     }
 
-   .namesSide{
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  gap:10px;
-  flex-wrap:wrap;
-  text-align:right;
-}
-.nBig{
-  font-size: 34px;     /* bigger */
-  font-weight: 700;
-  line-height:1.2;
-  color: var(--ink);
-}
+    .namesSide{
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      text-align:right;
+      position:relative;
+      padding: 6px 10px;
+    }
+
+    .namesSide::before,
+    .namesSide::after{
+      content:"✦";
+      position:absolute;
+      color: rgba(216,180,106,.9);
+      font-size: 18px;
+      animation: sparkle 2.2s ease-in-out infinite;
+      pointer-events:none;
+    }
+
+    .namesSide::before{
+      top: -8px;
+      right: -6px;
+    }
+
+    .namesSide::after{
+      bottom: -6px;
+      left: -4px;
+      font-size: 14px;
+      animation-delay: 1.1s;
+    }
+
+    @keyframes sparkle{
+      0%,100%{
+        opacity: .35;
+        transform: scale(.8) rotate(0deg);
+      }
+      50%{
+        opacity: 1;
+        transform: scale(1.2) rotate(12deg);
+      }
+    }
+
+    .nBig{
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1.2;
+      background: linear-gradient(180deg, #d8b46a 0%, #b89b5e 45%, #8f7441 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 1px 0 rgba(255,255,255,.35);
+      letter-spacing: .5px;
+      min-height: 48px;
+    }
+
     .nAnd{
       color: var(--gold);
       font-weight: 700;
-      font-size: 18px;
+      font-size: 22px;
       line-height:1;
       text-align:center;
       opacity:.95;
     }
 
     .coupleWrap{
-      width: 100%;
+      width:100%;
       display:flex;
       justify-content:center;
     }
+
     .coupleWrap img{
-      width: 44%;
-      max-width: 180px;
+      width:60%;
+      max-width:260px;
       height:auto;
       display:block;
-      filter: drop-shadow(0 12px 22px rgba(18,14,10,.10));
+      filter: drop-shadow(0 14px 28px rgba(18,14,10,.12));
     }
 
-    /* info rows BELOW */
+    /* info rows */
     .info{
-      margin: 12px auto 0;
+      margin: 18px auto 0;
       width: 100%;
       display:grid;
-      gap: 10px;
+      gap: 12px;
       text-align:right;
     }
 
@@ -324,7 +395,7 @@
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      padding: 12px 12px;
+      padding: 13px 13px;
       border-radius: 12px;
       border: 1px solid rgba(184,155,94,.16);
       background: rgba(255,255,255,.96);
@@ -332,10 +403,20 @@
       transform: translateY(10px);
     }
 
-    .infoRight{ display:flex; flex-direction:column; gap:2px; min-width:0; }
-    .infoLabel{ font-size: 11px; color: var(--muted); }
+    .infoRight{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+
+    .infoLabel{
+      font-size: 11px;
+      color: var(--muted);
+    }
+
     .infoValue{
-      font-size: 13px;
+      font-size: 14px;
       color: var(--ink);
       line-height:1.6;
       white-space:nowrap;
@@ -344,7 +425,8 @@
     }
 
     .infoIcon{
-      width: 30px; height:30px;
+      width: 32px;
+      height:32px;
       border-radius: 9px;
       display:grid;
       place-items:center;
@@ -353,12 +435,13 @@
       box-shadow: 0 8px 16px rgba(0,0,0,.06);
       font-size: 14px;
     }
+
     .infoIcon.blue{ background: rgba(88, 154, 255, .18); }
     .infoIcon.pink{ background: rgba(255, 128, 170, .18); }
     .infoIcon.red{  background: rgba(255, 92, 92,  .14); }
 
     .countdown{
-      margin: 10px auto 0;
+      margin: 16px auto 0;
       width: 100%;
       display:grid;
       grid-template-columns: repeat(4, 1fr);
@@ -366,15 +449,25 @@
       opacity:0;
       transform: translateY(10px);
     }
+
     .pill{
       border-radius: 12px;
       border:1px solid rgba(184,155,94,.16);
       background: rgba(255,255,255,.96);
-      padding: 10px 8px;
+      padding: 11px 8px;
       text-align:center;
     }
-    .pill strong{ display:block; font-size: 16px; }
-    .pill em{ font-style:normal; color: var(--muted); font-size: 11px; }
+
+    .pill strong{
+      display:block;
+      font-size: 17px;
+    }
+
+    .pill em{
+      font-style:normal;
+      color: var(--muted);
+      font-size: 11px;
+    }
 
     .showUp{
       opacity:1 !important;
@@ -382,142 +475,98 @@
       transition: opacity 900ms ease, transform 900ms ease;
     }
 
-    @media (max-width: 520px){
-      .tapArea{ min-height: 280px; padding: 56px 16px 46px; }
-      .countdown{ grid-template-columns: repeat(2, 1fr); }
+    /* responsive */
+    @media (max-width: 700px){
+      .stage{
+        width:min(520px, 100%);
+      }
+    }
 
-      /* stack image + names on mobile nicely */
+    @media (max-width: 520px){
+      .wrap{
+        padding: calc(10px + var(--safe-top)) 10px calc(10px + var(--safe-bottom));
+      }
+
+      .stage{
+        width:100%;
+        gap:12px;
+      }
+
+      .tapArea{
+        min-height: 280px;
+        padding: 56px 16px 46px;
+      }
+
+      .paperInner{
+        padding: 26px 14px 22px;
+        min-height: 0;
+      }
+
+      .title{
+        font-size: 34px;
+      }
+
+      .subtitle{
+        font-size: 14px;
+        line-height: 1.95;
+      }
+
       .heroRow{
         grid-template-columns: 1fr;
         gap: 10px;
         justify-items:center;
         text-align:center;
       }
-      .namesSide{ text-align:center; }
-      .coupleWrap img{ width: 58%; max-width: 190px; }
+
+      .namesSide{
+        justify-content: center;
+        text-align:center;
+      }
+
+      .nBig{
+        font-size: 34px;
+        min-height: 40px;
+      }
+
+      .nAnd{
+        font-size: 18px;
+      }
+
+      .coupleWrap img{
+        width:72%;
+        max-width:260px;
+      }
+
+      .infoRow{
+        padding: 11px 10px;
+      }
+
+      .infoValue{
+        font-size: 13px;
+      }
+
+      .countdown{
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .bgCouple{
+        background-size: 92%;
+        background-position: center 82%;
+      }
+    }
+
+    @media (max-width: 360px){
+      .title{ font-size: 30px; }
+      .nBig{ font-size: 30px; }
+      .coupleWrap img{ width: 78%; }
     }
 
     @media (prefers-reduced-motion: reduce){
       .envShell, .flap, .paper { transition:none !important; }
     }
-/* ===== Transparent Couple Background INSIDE card ===== */
-.paperInner{
-  position: relative;   /* important */
-}
-
-.bgCouple{
-  position: absolute;
-  inset: 0;
-  background-image: url("couple.png");
-  background-repeat: no-repeat;
-  background-position: center bottom;  /* inside bottom area */
-  background-size: 75%;
-  opacity: 0.07;     /* transparency level */
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Make all text above the background */
-.paperInner > *:not(.bgCouple){
-  position: relative;
-  z-index: 1;
-}
-
-    /* ==========================
-   Mobile Responsive Upgrade
-   Paste at END of your CSS
-   ========================== */
-
-/* Make sure nothing causes horizontal scroll */
-html, body { max-width: 100%; overflow-x: hidden; }
-
-/* Make the stage/card adapt better */
-.stage{
-  width: min(520px, 100%); /* desktop/tablet nice */
-}
-
-/* The card should never feel tight on phones */
-.paper{
-  width: 100%;
-}
-
-/* Content spacing for a vertical phone */
-@media (max-width: 520px){
-
-  .wrap{
-    padding: calc(10px + var(--safe-top)) 10px calc(10px + var(--safe-bottom));
-  }
-
-  .stage{
-    width: 100%;
-    gap: 12px;
-  }
-
-  /* Bigger, more realistic paper on vertical phone */
-  .paperInner{
-    padding: 26px 14px 22px;
-  }
-
-  /* Title/subtitle scale better */
-  .title{
-    font-size: 34px;
-  }
-  .subtitle{
-    font-size: 14px;
-    line-height: 1.95;
-  }
-
-  /* Hero row stacks vertically on mobile */
-  .heroRow{
-    grid-template-columns: 1fr;
-    gap: 10px;
-    justify-items: center;
-    text-align: center;
-  }
-
-  /* Names horizontal line stays centered */
-  .namesSide{
-    justify-content: center;
-  }
-
-  /* Bigger names on phone but not breaking */
-  .nBig{
-    font-size: 32px;
-  }
-  .nAnd{
-    font-size: 18px;
-  }
-
-  /* Couple image bigger for vertical phone */
-  .coupleWrap img{
-    width: 72%;
-    max-width: 260px;
-  }
-
-  /* Info rows readable on small screens */
-  .infoRow{
-    padding: 11px 10px;
-  }
-  .infoValue{
-    font-size: 13px;
-  }
-
-  /* Countdown 2 columns on phone */
-  .countdown{
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-}
-
-/* Very small phones */
-@media (max-width: 360px){
-  .title{ font-size: 30px; }
-  .nBig{ font-size: 28px; }
-  .coupleWrap img{ width: 78%; }
-}
   </style>
 </head>
-
 <body>
   <div class="bg"></div>
   <div class="curtain left"></div>
@@ -527,7 +576,6 @@ html, body { max-width: 100%; overflow-x: hidden; }
   <div class="wrap">
     <div class="stage">
 
-      <!-- Envelope -->
       <section class="envelope" aria-label="Invitation Envelope">
         <div class="envShell" id="envShell">
           <div class="envBody">
@@ -539,32 +587,29 @@ html, body { max-width: 100%; overflow-x: hidden; }
         </div>
       </section>
 
-      <!-- Invitation -->
       <article class="paper" id="paper" aria-label="Engagement Invitation">
         <div class="paperInner">
+          <div class="bgCouple"></div>
+
           <div class="tag"><span class="tagDot"></span><span>بانگهێشتنامە</span></div>
 
-          <div class="title" id="title">ئاهەنگی داواکاری</div>
+          <div class="title" id="title">ئاهەنگی مارەکردن</div>
           <p class="subtitle" id="subtitle"></p>
 
           <div class="divider" id="divider"></div>
 
-          <!-- ✅ Image + names side -->
           <div class="heroRow" id="heroRow">
-            <!-- Names on RIGHT side -->
-           <div class="namesSide">
-  <span class="nBig" id="bride"></span>
-  <span class="nAnd">و</span>
-  <span class="nBig" id="groom"></span>
-</div>
+            <div class="namesSide">
+              <span class="nBig" id="bride"></span>
+              <span class="nAnd">و</span>
+              <span class="nBig" id="groom"></span>
+            </div>
 
-            <!-- Image -->
             <div class="coupleWrap">
               <img src="couple.png" alt="وێنەی هاوسەرگیریی کوردی" loading="eager">
             </div>
           </div>
 
-          <!-- Info BELOW -->
           <div class="info" aria-label="Event details">
             <div class="infoRow" id="row1">
               <div class="infoRight">
@@ -603,15 +648,12 @@ html, body { max-width: 100%; overflow-x: hidden; }
     </div>
   </div>
 
-<div class="paperInner">
-  <div class="bgCouple"></div>
-
   <script>
     const INVITE = {
-      title: "ئاهەنگی داواکاری",
-      subtitle: "بە ناوی خۆشحاڵی و خۆشەویستی، بانگهێشتتان دەکەین بۆ بەشداربوون لە ئاهەنگی داواکاریەکەمان",
-      bride: "سارا",
-      groom: "ئەحمەد",
+      title: "ئاهەنگی مارەکردن",
+      subtitle: "بە ناوی خۆشحاڵی و خۆشەویستی، بانگهێشتتان دەکەین بۆ بەشداربوون لە ئاهەنگی مارەکردنەکەمان",
+      bride: "هێلین",
+      groom: "سەروەر",
       dateText: "هەینی ١٥ی ئازاری ٢٠٢٦",
       timeText: "کاتژمێر ٦ی ئێوارە",
       venueText: "هۆڵی ڕۆز - سلێمانی",
@@ -619,17 +661,19 @@ html, body { max-width: 100%; overflow-x: hidden; }
     };
 
     const $ = (id) => document.getElementById(id);
-    const setText = (id, v) => { const el=$(id); if(el) el.textContent = v ?? ""; };
+    const setText = (id, v) => {
+      const el = $(id);
+      if (el) el.textContent = v ?? "";
+    };
 
-    async function typeLine(el, text, speed=11){
+    async function typeLine(el, text, speed = 11){
       el.textContent = "";
-      for(let i=0;i<text.length;i++){
+      for(let i = 0; i < text.length; i++){
         el.textContent += text[i];
         await new Promise(r => setTimeout(r, speed));
       }
     }
 
-    // Fill static content (typed ones will be done in open)
     setText("title", INVITE.title);
     setText("dateText", INVITE.dateText);
     setText("timeText", INVITE.timeText);
@@ -649,7 +693,9 @@ html, body { max-width: 100%; overflow-x: hidden; }
     const brideEl = $("bride");
     const groomEl = $("groom");
 
-    const row1 = $("row1"), row2 = $("row2"), row3 = $("row3");
+    const row1 = $("row1");
+    const row2 = $("row2");
+    const row3 = $("row3");
     const countdown = $("countdown");
 
     let opened = false;
@@ -658,17 +704,12 @@ html, body { max-width: 100%; overflow-x: hidden; }
       if(opened) return;
       opened = true;
 
-      // flap open
       flap.style.transform = "rotateX(165deg)";
-
-      // show paper
       setTimeout(() => paper.classList.add("open"), 520);
-
-      // ✅ faster fade envelope away
       setTimeout(() => envShell.classList.add("vanish"), 650);
 
-      // ✅ top -> down sequence
       setTimeout(() => titleEl.classList.add("showUp"), 700);
+
       setTimeout(async () => {
         subtitle.classList.add("showUp");
         await typeLine(subtitle, INVITE.subtitle, 11);
@@ -676,7 +717,6 @@ html, body { max-width: 100%; overflow-x: hidden; }
 
       setTimeout(() => divider.classList.add("showUp"), 1020);
 
-      // ✅ show hero row + type names
       setTimeout(async () => {
         heroRow.classList.add("showUp");
         await typeLine(brideEl, INVITE.bride, 16);
@@ -684,12 +724,9 @@ html, body { max-width: 100%; overflow-x: hidden; }
         await typeLine(groomEl, INVITE.groom, 16);
       }, 1120);
 
-      // then details rows
       setTimeout(() => row1.classList.add("showUp"), 1600);
       setTimeout(() => row2.classList.add("showUp"), 1760);
       setTimeout(() => row3.classList.add("showUp"), 1920);
-
-      // then countdown last
       setTimeout(() => countdown.classList.add("showUp"), 2100);
     }
 
@@ -699,18 +736,21 @@ html, body { max-width: 100%; overflow-x: hidden; }
       setTimeout(openInvite, 280);
     });
 
-    // Countdown
     const target = new Date(INVITE.dateTimeLocal).getTime();
+
     function updateCountdown(){
       if(!Number.isFinite(target)) return;
 
       const now = Date.now();
       const diff = target - now;
 
-      const set = (id,val)=>setText(id,String(val));
+      const set = (id, val) => setText(id, String(val));
 
       if(diff <= 0){
-        set("cd_d",0); set("cd_h",0); set("cd_m",0); set("cd_s",0);
+        set("cd_d", 0);
+        set("cd_h", 0);
+        set("cd_m", 0);
+        set("cd_s", 0);
         return;
       }
 
@@ -720,14 +760,14 @@ html, body { max-width: 100%; overflow-x: hidden; }
       const mins = Math.floor((totalSec % 3600) / 60);
       const secs = totalSec % 60;
 
-      set("cd_d",days);
-      set("cd_h",hours);
-      set("cd_m",mins);
-      set("cd_s",secs);
+      set("cd_d", days);
+      set("cd_h", hours);
+      set("cd_m", mins);
+      set("cd_s", secs);
     }
+
     updateCountdown();
     setInterval(updateCountdown, 1000);
   </script>
 </body>
-
 </html>
